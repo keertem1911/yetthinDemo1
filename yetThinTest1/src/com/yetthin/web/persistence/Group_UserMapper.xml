@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yetthin.web.persistence.Group_UserMapper">
+	<resultMap id="BaseResultMap" type="com.yetthin.web.domain.Group_User">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="group_id" property="groupId" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap type="com.yetthin.web.domain.User" id="user">
+		<result column="user_id" property="useId" jdbcType="INTEGER"></result>
+		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="user_email" property="userEmail" jdbcType="VARCHAR" />
+		<result column="user_phone" property="userPhone" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap type="com.yetthin.web.domain.User" id="userType" extends="user">
+		<collection property="groups" ofType="com.yetthin.web.domain.Group">
+			<result column="group_id" property="groupId"/>
+			<result column="group_name" property="groupName"/>
+			<result column="group_desc" property="groupDesc"/>
+		</collection>
+	</resultMap>
+	<resultMap type="com.yetthin.web.domain.Group" id="group">
+		<result column="group_id" property="groupId" jdbcType="INTEGER"></result>
+		<result column="group_name" property="groupName" jdbcType="VARCHAR"></result>
+		<result column="group_desc" property="groupDesc" jdbcType="VARCHAR"></result>
+	</resultMap>
+	
+	<resultMap type="com.yetthin.web.domain.Group" id="groupType" extends="group">
+		<collection property="users" ofType="com.yetthin.web.domain.User">
+			<result column="user_id" property="userId" jdbcType="INTEGER"/>
+			<result column="user_name" property="userName"/>
+			<result column="user_email" property="userEmail"/>
+			<result column="user_phone" property="userPhone"/>
+		</collection>
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, user_id, group_id
+	</sql>
+	<sql id="List">
+		g.group_id,g.group_name,g.group_desc,u.user_id,u.user_name,u.user_email,u.user_phone
+	</sql>
+	
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from group_user
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from group_user
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.yetthin.web.domain.Group_User">
+		<selectKey resultType="java.lang.Integer" keyProperty="id"
+			order="BEFORE">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into group_user (id, user_id, group_id
+		)
+		values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
+		#{groupId,jdbcType=INTEGER}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.yetthin.web.domain.Group_User">
+		<selectKey resultType="java.lang.Integer" keyProperty="id"
+			order="BEFORE">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into group_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			id,
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="groupId != null">
+				group_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id,jdbcType=INTEGER},
+			<if test="userId != null">
+				#{userId,jdbcType=INTEGER},
+			</if>
+			<if test="groupId != null">
+				#{groupId,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.yetthin.web.domain.Group_User">
+		update group_user
+		<set>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="groupId != null">
+				group_id = #{groupId,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.yetthin.web.domain.Group_User">
+		update group_user
+		set user_id = #{userId,jdbcType=INTEGER},
+		group_id = #{groupId,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="countById" parameterType="java.lang.Integer"
+		resultType="java.lang.Integer">
+		select count(id) from group_user
+	</select>
+	<select id="selectByUser_IdList" parameterType="java.lang.Integer"
+		resultMap="userType">
+		select 
+		<include refid="List"></include>
+		from user u left join group_user gu on u.user_id=gu.user_id 
+		 left join Ggroup g on g.group_id=gu.group_id
+		 where i.user_id=#{id} 
+			
+	</select>
+	<select id="selectByGroup_IdList" parameterType="java.lang.Integer"
+		resultMap="groupType">
+		select 
+		<include refid="List"></include>
+		from Ggroup g left join group_user gu on g.group_id=gu.group_id
+		left join user u on u.user_id = gu.user_id
+		where g.group_id =#{id}
+		</select>
+
+
+</mapper>
