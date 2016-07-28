@@ -22,7 +22,7 @@ public class BaseController {
 	private static final int shortLogin= 60*60*24*1;
 	//用户 id
 	private String userId=null;
-	@Resource(name="userService")
+	/*@Resource(name="userService")
 	private UserService userService;
-	
+	*/
 }

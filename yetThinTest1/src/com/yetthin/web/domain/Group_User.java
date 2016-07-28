@@ -3,9 +3,9 @@ package com.yetthin.web.domain;
 public class Group_User {
     private Integer id;
 
-    private Integer userId;
+    private String userId;
 
-    private Integer groupId;
+    private String groupId;
 
     public Integer getId() {
         return id;
@@ -15,19 +15,25 @@ public class Group_User {
         this.id = id;
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
+	public String getUserId() {
+		return userId;
+	}
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
-    public Integer getGroupId() {
-        return groupId;
-    }
+	public String getGroupId() {
+		return groupId;
+	}
 
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
-    }
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
+
+	@Override
+	public String toString() {
+		return "Group_User [id=" + id + ", userId=" + userId + ", groupId=" + groupId + "]";
+	}
+ 
 }

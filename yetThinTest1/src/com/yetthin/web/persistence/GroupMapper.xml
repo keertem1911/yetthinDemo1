@@ -6,24 +6,39 @@
     <result column="group_name" property="groupName" jdbcType="VARCHAR" />
     <result column="group_desc" property="groupDesc" jdbcType="VARCHAR" />
   </resultMap>
+ 
+	<resultMap type="com.yetthin.web.domain.Group" id="groupType" extends="BaseResultMap">
+		<collection property="users" ofType="com.yetthin.web.domain.User">
+			<result column="user_id" property="userId" jdbcType="INTEGER"/>
+			<result column="user_name" property="userName" jdbcType="VARCHAR"/>
+			<result column="user_email" property="userEmail" jdbcType="VARCHAR"/>
+			<result column="user_phone" property="userPhone" jdbcType="VARCHAR"/>
+		</collection>
+	</resultMap>
   <sql id="Base_Column_List" >
     group_id, group_name, group_desc
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from group
-    where group_id = #{groupId,jdbcType=INTEGER}
-  </select>
+  <sql id="List">
+		g.group_id,g.group_name,g.group_desc,u.user_id,u.user_name,u.user_email,u.user_phone
+	</sql>
+ 
+ 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="groupType">
+		select 
+		<include refid="List"></include>
+		from Ggroup g left join group_user gu on g.group_id=gu.group_id
+		left join user u on u.user_id = gu.user_id
+		where g.group_id =#{id}
+		</select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from group
+    delete from Ggroup
     where group_id = #{groupId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.yetthin.web.domain.Group" >
     <selectKey resultType="java.lang.Integer" keyProperty="groupId" order="BEFORE" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into group (group_id, group_name, group_desc
+    insert into Ggroup (group_id, group_name, group_desc
       )
     values (#{groupId,jdbcType=INTEGER}, #{groupName,jdbcType=VARCHAR}, #{groupDesc,jdbcType=VARCHAR}
       )
@@ -32,7 +47,7 @@
     <selectKey resultType="java.lang.Integer" keyProperty="groupId" order="BEFORE" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into group
+    insert into Ggroup
     <trim prefix="(" suffix=")" suffixOverrides="," >
       group_id,
       <if test="groupName != null" >
@@ -53,7 +68,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.yetthin.web.domain.Group" >
-    update group
+    update Ggroup
     <set >
       <if test="groupName != null" >
         group_name = #{groupName,jdbcType=VARCHAR},
@@ -65,9 +80,19 @@
     where group_id = #{groupId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yetthin.web.domain.Group" >
-    update group
+    update Ggroup
     set group_name = #{groupName,jdbcType=VARCHAR},
       group_desc = #{groupDesc,jdbcType=VARCHAR}
     where group_id = #{groupId,jdbcType=INTEGER}
   </update>
+  <select id="countById" parameterType="java.lang.Integer" 
+  resultType="java.lang.Integer">
+ 	select count(group_id) from Ggroup
+  </select>
+  <select id="selectAll"  resultMap="groupType">
+	select 
+	<include refid="List"></include>   
+ 	from Ggroup g left join group_user gu on g.group_id=gu.group_id
+		left join user u on u.user_id = gu.user_id
+  </select>
 </mapper>

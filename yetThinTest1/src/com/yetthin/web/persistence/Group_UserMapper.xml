@@ -7,7 +7,7 @@
 		<result column="group_id" property="groupId" jdbcType="INTEGER" />
 	</resultMap>
 	<resultMap type="com.yetthin.web.domain.User" id="user">
-		<result column="user_id" property="useId" jdbcType="INTEGER"></result>
+		<result column="user_id" property="userId" jdbcType="INTEGER"></result>
 		<result column="user_name" property="userName" jdbcType="VARCHAR" />
 		<result column="user_email" property="userEmail" jdbcType="VARCHAR" />
 		<result column="user_phone" property="userPhone" jdbcType="VARCHAR" />
@@ -116,7 +116,7 @@
 		<include refid="List"></include>
 		from user u left join group_user gu on u.user_id=gu.user_id 
 		 left join Ggroup g on g.group_id=gu.group_id
-		 where i.user_id=#{id} 
+		 where u.user_id=#{id} 
 			
 	</select>
 	<select id="selectByGroup_IdList" parameterType="java.lang.Integer"
@@ -127,6 +127,13 @@
 		left join user u on u.user_id = gu.user_id
 		where g.group_id =#{id}
 		</select>
-
+		<delete id="deleteGroup" parameterType="java.lang.Integer">
+			delete from group_user 
+			  where  group_id=#{id,jdbcType=INTEGER}
+		</delete>
+		<delete id="deleteUser" parameterType="java.lang.Integer">
+			delete from group_user 
+			  where  user_id=#{id,jdbcType=INTEGER}
+		</delete>
 
 </mapper>

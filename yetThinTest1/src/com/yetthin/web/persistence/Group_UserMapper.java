@@ -9,4 +9,7 @@ import com.yetthin.web.domain.User;
 public interface Group_UserMapper extends BaseMapper<Group_User>{
     public abstract User selectByUser_IdList(Integer id);
     public abstract Group selectByGroup_IdList(Integer id);
+    public abstract int deleteUser(Integer id);
+    public abstract int deleteGroup(Integer id);
+    
 }
