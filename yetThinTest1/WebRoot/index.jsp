@@ -55,6 +55,7 @@
  		<input type="submit" value="submit"/>
  	</form>
  	<a href="ajax.jsp">ajaxjsp</a>
+ 	<a href="rest/goto">RESTFUL </a>
  	</div>
  	<a href="group/getAll">getAll</a>
  	</div>
